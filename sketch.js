@@ -4,9 +4,9 @@ let cols = 100;
 let rows = 100;
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(windowWidth, windowHeight);
   grid = create2DArray(cols, rows, 0);
-  sizes = create2DArray(cols, rows, () => random(5, 20)); // גודל ריבוע רנדומלי בין 5 ל-20
+  sizes = create2DArray(cols, rows, () => random(5, 20));
 }
 
 function draw() {
@@ -20,6 +20,19 @@ function mousePressed() {
 
 function mouseDragged() {
   updateGrid();
+}
+
+function keyPressed() {
+  if (key === ' ') {
+    resetGrid();
+  } else if (key === 's') {
+    saveCanvas('myCanvas', 'jpg');
+  }
+}
+
+function resetGrid() {
+  grid = create2DArray(cols, rows, 0);
+  sizes = create2DArray(cols, rows, () => random(5, 20));
 }
 
 function updateGrid() {
@@ -53,6 +66,8 @@ function create2DArray(cols, rows, initialValue) {
 }
 
 function drawGrid() {
+  let cellWidth = width / cols;
+  let cellHeight = height / rows;
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       let size = sizes[i][j];
@@ -70,13 +85,17 @@ function drawGrid() {
         fill(255);
       }
       stroke(200);
-      rect(i * (width / cols), j * (height / rows), size, size);
+      rect(i * cellWidth, j * cellHeight, size, size);
     }
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  resetGrid(); // Reset grid sizes when window is resized
 }
 
 // Disable context menu on right click
 document.oncontextmenu = function() {
   return false;
 }
-
